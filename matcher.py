@@ -4,7 +4,7 @@
 # 3 match, then the generator function is called on the matching tag.
 
 
-class Matcher(object):
+class Matcher:
     def __init__(self, name, attribute, value, generator, input_dir, output_dir):
         self.name = name
         self.attribute = attribute

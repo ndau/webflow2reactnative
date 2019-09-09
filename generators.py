@@ -78,7 +78,7 @@ def gen_button(tag, output, parent, input_dir, output_dir):
     text = tag.text
 
     bw = output.new_tag("ButtonWrapper")
-    styled_components = create_styled_component(tag,
+    styled_components += create_styled_component(tag,
                                                 "ButtonWrapper",
                                                 "styled.TouchableOpacity",
                                                 os.path.join(input_dir, 'css'),
