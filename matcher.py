@@ -5,11 +5,13 @@
 
 
 class Matcher(object):
-    def __init__(self, name, attribute, value, generator):
+    def __init__(self, name, attribute, value, generator, input_dir, output_dir):
         self.name = name
         self.attribute = attribute
         self.value = value
         self.generator = generator
+        self.input_dir = input_dir
+        self.output_dir = output_dir
 
     def match(self, tag):
         if tag.name != self.name:
@@ -28,4 +30,4 @@ class Matcher(object):
         BeautifulSoup object), and a parent (which is where the result should be
         inserted).
         """
-        return self.generator(tag, output, parent)
+        return self.generator(tag, output, parent, self.input_dir, self.output_dir)

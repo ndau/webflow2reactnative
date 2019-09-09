@@ -7,10 +7,15 @@ from tinycss.css21 import CSS21Parser
 # ---- generators ---
 styled_components = ''
 
-# function to search for a CSS selector in all css files
+# React Native does not support all CSS keys
+# below is a list of keys it does not support
+rn_css_filter = ["webkit", "ms-"]
 
 
 def use_styled_components():
+    """
+    function to search for a CSS selector in all css files
+    """
     global styled_components
     sc = styled_components
     styled_components = ''
@@ -54,14 +59,22 @@ def search_for_selector(rule, klass):
             prop_css_val = ''
             for v in d.value:
                 prop_css_val = prop_css_val+' '+v.as_css()
-            css_str = css_str + \
-                str(d.name)+":"+prop_css_val+";\n"
+
+            found_in_filter = False
+            for filter in rn_css_filter:
+                if str(d.name).find(filter) >= 0 or prop_css_val.find(filter) >= 0:
+                    found_in_filter = True
+
+            if not found_in_filter:
+                css_str = css_str + \
+                    str(d.name)+":"+prop_css_val+";\n"
+
         return css_str
 
 # the generator for a Button
 
 
-def gen_button(tag, output, parent):
+def gen_button(tag, output, parent, input_dir, output_dir):
     global styled_components
     text = tag.text
 
@@ -69,17 +82,17 @@ def gen_button(tag, output, parent):
     styled_components = create_styled_component(tag,
                                                 "ButtonWrapper",
                                                 "styled.TouchableOpacity",
-                                                'test/data/input1/css',
-                                                'w-button')
+                                                os.path.join(input_dir, 'css'),
+                                                text)
 
     styled_components += create_styled_component(tag,
                                                  "ButtonText",
                                                  "styled.Text",
-                                                 'test/data/input1/css',
-                                                 'w-button')
+                                                 os.path.join(
+                                                     input_dir, 'css'),
+                                                 text)
 
     bt = output.new_tag("ButtonText")
-
     bt.append(text)
     bw.append(bt)
     parent.append(bw)
@@ -88,7 +101,7 @@ def gen_button(tag, output, parent):
 
 
 # the generator for a text input
-def gen_textinput(tag, output, parent):
+def gen_textinput(tag, output, parent, input_dir, output_dir):
     tiw = output.new_tag("TextInputWrapper")
     parent.append(tiw)
     return parent

@@ -6,11 +6,16 @@ import generators
 from bs4 import BeautifulSoup
 from matcher import Matcher
 
+input_dir = sys.argv[1]
+output_dir = sys.argv[2]
+
 # This is a list of all the matcher objects. Be aware that if multiple
 # Matchers match the same tag, only the first one that matches gets called.
 matchers = [
-    Matcher("a", "class", "w-button", generators.gen_button),
-    Matcher("input", "class", "text-field", generators.gen_textinput),
+    Matcher("a", "class", "w-button",
+            generators.gen_button, input_dir, output_dir),
+    Matcher("input", "class", "text-field",
+            generators.gen_textinput, input_dir, output_dir),
 ]
 
 
@@ -60,9 +65,11 @@ def processInputDir(input_dir, output_dir):
 
 
 if __name__ == "__main__":
-
     if len(sys.argv) != 3:
         print("Usage: python3 w2rn.py <input-dir> <output-dir>")
         exit(1)
 
-    processInputDir(sys.argv[1], sys.argv[2])
+    input_dir = sys.argv[1]
+    output_dir = sys.argv[2]
+
+    processInputDir(input_dir, output_dir)
