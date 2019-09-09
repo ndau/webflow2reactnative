@@ -6,7 +6,9 @@ from tinycss.css21 import CSS21Parser
 
 # React Native does not support all CSS keys
 # below is a list of keys it does not support
-rn_css_filter = ["webkit", "ms-"]
+# or it does not work well in RN
+rn_css_filter = ["webkit", "ms-", "inline-block",
+                 "line-height", "cursor", "block"]
 
 
 def create_styled_component(tag, component_name, component_type, css_dir, selector):
@@ -91,10 +93,21 @@ def gen_button(tag, output, parent, input_dir, output_dir):
 
 
 # the generator for a text input
-def gen_textinput(tag, output, parent, input_dir, output_dir):
-    tiw = output.new_tag("TextInputWrapper")
+text_input_counter = 1
 
-    styled_components = ''
+
+def gen_textinput(tag, output, parent, input_dir, output_dir):
+    global text_input_counter
+    text = tag.text
+
+    rn_tag_name = f"TextInputWrapper{text_input_counter}"
+    tiw = output.new_tag(rn_tag_name)
+    styled_components = create_styled_component(tag,
+                                                rn_tag_name,
+                                                "styled.TextInput",
+                                                os.path.join(
+                                                    input_dir, 'css'),
+                                                text)
 
     parent.append(tiw)
     return parent, styled_components

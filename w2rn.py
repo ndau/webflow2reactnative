@@ -5,6 +5,7 @@ import os
 import generators
 from bs4 import BeautifulSoup
 from matcher import Matcher
+from string import Template
 
 input_dir = sys.argv[1]
 output_dir = sys.argv[2]
@@ -14,8 +15,8 @@ output_dir = sys.argv[2]
 matchers = [
     Matcher("a", "class", "w-button",
             generators.gen_button, input_dir, output_dir),
-    # Matcher("input", "class", "text-field",
-    #         generators.gen_textinput, input_dir, output_dir),
+    Matcher("input", "class", "text-field",
+            generators.gen_textinput, input_dir, output_dir),
 ]
 
 
@@ -54,26 +55,24 @@ def processInputDir(input_dir, output_dir):
             continue
 
 
+def get_template():
+    with open(os.path.join('templates', 'rn_view.template'), encoding='utf8') as f:
+        template = f.read()
+    return template
+
+
 def writeReactNativeFile(output_dir, filename, total_styled_components, outp):
     views_dir = os.path.join(output_dir, 'src', 'ui', 'views')
     os.makedirs(views_dir, exist_ok=True)
     react_native_filename = filename.capitalize().rpartition('.html')[
         0] + 'View'
 
+    template = Template(get_template())
+    content = template.substitute(styled_components=total_styled_components,
+                                  jsx=outp.prettify(formatter='html'))
+
     with open(os.path.join(views_dir, react_native_filename + '.js'), "w") as outfile:
-        print("import React from 'react'", file=outfile)
-        print("import { View } from 'react-native'", file=outfile)
-        print("import styled from 'styled-components'\n", file=outfile)
-        print(total_styled_components, file=outfile)
-        print("class " + react_native_filename +
-              " extends React.Component {", file=outfile)
-        print("  render() {", file=outfile)
-        print("    return (", file=outfile)
-        print("      " + outp.prettify(formatter='html'), file=outfile)
-        print("    )", file=outfile)
-        print("  }", file=outfile)
-        print("}\n", file=outfile)
-        print("export default " + react_native_filename, file=outfile)
+        print(content, file=outfile)
 
 
 if __name__ == "__main__":
