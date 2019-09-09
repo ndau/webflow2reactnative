@@ -4,22 +4,9 @@ import os
 import tinycss
 from tinycss.css21 import CSS21Parser
 
-# ---- generators ---
-styled_components = ''
-
 # React Native does not support all CSS keys
 # below is a list of keys it does not support
 rn_css_filter = ["webkit", "ms-"]
-
-
-def use_styled_components():
-    """
-    function to search for a CSS selector in all css files
-    """
-    global styled_components
-    sc = styled_components
-    styled_components = ''
-    return sc
 
 
 def create_styled_component(tag, component_name, component_type, css_dir, selector):
@@ -33,22 +20,22 @@ def create_styled_component(tag, component_name, component_type, css_dir, select
             filepath = subdir + os.sep + file
 
             if filepath.endswith(".css"):
-                f = open(filepath)
-                stylesheet = CSS21Parser().parse_stylesheet(f.read())
-                for rule in stylesheet.rules:
-                    # let us reconstruct the css rule
-                    for klass in class_names:
-                        try:
-                            the_css = search_for_selector(rule, klass)
-                            if the_css is not None:
-                                css += the_css
-                        except AttributeError:
-                            for media_rule in rule.rules:
-                                for klass in class_names:
-                                    the_css = search_for_selector(
-                                        media_rule, klass)
-                                    if the_css is not None:
-                                        css += the_css
+                with open(filepath) as f:
+                    stylesheet = CSS21Parser().parse_stylesheet(f.read())
+                    for rule in stylesheet.rules:
+                        # let us reconstruct the css rule
+                        for klass in class_names:
+                            try:
+                                the_css = search_for_selector(rule, klass)
+                                if the_css is not None:
+                                    css += the_css
+                            except AttributeError:
+                                for media_rule in rule.rules:
+                                    for klass in class_names:
+                                        the_css = search_for_selector(
+                                            media_rule, klass)
+                                        if the_css is not None:
+                                            css += the_css
     return styled_component + css + '`\n'
 
 
@@ -56,9 +43,7 @@ def search_for_selector(rule, klass):
     if rule.selector.as_css() == '.' + klass or rule.selector.as_css() == '#' + klass or rule.selector.as_css() == klass:
         css_str = ''
         for d in rule.declarations:
-            prop_css_val = ''
-            for v in d.value:
-                prop_css_val = prop_css_val+' '+v.as_css()
+            prop_css_val = ' '.join(v.as_css() for v in d.value)
 
             found_in_filter = False
             for filter in rn_css_filter:
@@ -73,34 +58,43 @@ def search_for_selector(rule, klass):
 # the generator for a Button
 
 
+button_wrapper_counter = 1
+
+
 def gen_button(tag, output, parent, input_dir, output_dir):
-    global styled_components
+    global button_wrapper_counter
     text = tag.text
 
-    bw = output.new_tag("ButtonWrapper")
-    styled_components += create_styled_component(tag,
-                                                "ButtonWrapper",
+    bw = output.new_tag(f"ButtonWrapper{button_wrapper_counter}")
+    styled_components = create_styled_component(tag,
+                                                f"ButtonWrapper{button_wrapper_counter}",
                                                 "styled.TouchableOpacity",
-                                                os.path.join(input_dir, 'css'),
+                                                os.path.join(
+                                                    input_dir, 'css'),
                                                 text)
 
     styled_components += create_styled_component(tag,
-                                                 "ButtonText",
+                                                 f"ButtonText{button_wrapper_counter}",
                                                  "styled.Text",
                                                  os.path.join(
                                                      input_dir, 'css'),
                                                  text)
 
-    bt = output.new_tag("ButtonText")
+    bt = output.new_tag(f"ButtonText{button_wrapper_counter}")
     bt.append(text)
     bw.append(bt)
     parent.append(bw)
 
-    return parent
+    button_wrapper_counter += 1
+
+    return parent, styled_components
 
 
 # the generator for a text input
 def gen_textinput(tag, output, parent, input_dir, output_dir):
     tiw = output.new_tag("TextInputWrapper")
+
+    styled_components = ''
+
     parent.append(tiw)
-    return parent
+    return parent, styled_components

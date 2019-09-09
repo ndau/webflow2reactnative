@@ -12,18 +12,19 @@ output_dir = sys.argv[2]
 # This is a list of all the matcher objects. Be aware that if multiple
 # Matchers match the same tag, only the first one that matches gets called.
 matchers = [
-    Matcher("a", "class", "button",
+    Matcher("a", "class", "w-button",
             generators.gen_button, input_dir, output_dir),
-    Matcher("input", "class", "text-field",
-            generators.gen_textinput, input_dir, output_dir),
+    # Matcher("input", "class", "text-field",
+    #         generators.gen_textinput, input_dir, output_dir),
 ]
 
 
-def process(tag, matchers, output, parent):
+def process(tag, matchers, output, parent, styled_components):
     for m in matchers:
         if m.match(tag):
             return m.generate(tag, output, parent)
-    return parent
+
+    return parent, styled_components
 
 
 def processInputDir(input_dir, output_dir):
@@ -33,35 +34,46 @@ def processInputDir(input_dir, output_dir):
                 inp = BeautifulSoup(infile, "lxml")
 
             outp = BeautifulSoup("", "lxml")
-            div = outp.new_tag("Div1")
 
             # find_all walks the tree in order and emits a list of all tags in the system,
             # so we don't need to process things recursively.
+            styled_components = ''
+            total_styled_components = ''
+            div = outp.new_tag("View")
             for ch in inp.body.find_all(True):
-                div = process(ch, matchers, outp, div)
+                div, styled_components = process(
+                    ch, matchers, outp, div, styled_components)
+                if styled_components not in total_styled_components:
+                    total_styled_components += styled_components
 
             outp.append(div)
 
-            views_dir = os.path.join(output_dir, 'src', 'ui', 'views')
-            os.makedirs(views_dir, exist_ok=True)
-            react_native_filename = filename.capitalize().rpartition('.html')[
-                0] + 'View'
-
-            with open(os.path.join(views_dir, react_native_filename + '.js'), "w") as outfile:
-                print("import React from 'react'", file=outfile)
-                print("import styled from 'styled-components'\n", file=outfile)
-                print(generators.use_styled_components(), file=outfile)
-                print("class " + react_native_filename +
-                      " extends React.Component {", file=outfile)
-                print("  render() {", file=outfile)
-                print("    return (", file=outfile)
-                print("      " + outp.prettify(formatter='html'), file=outfile)
-                print("    )", file=outfile)
-                print("  }", file=outfile)
-                print("}\n", file=outfile)
-                print("export default " + react_native_filename, file=outfile)
+            writeReactNativeFile(output_dir, filename,
+                                 total_styled_components, outp)
         else:
             continue
+
+
+def writeReactNativeFile(output_dir, filename, total_styled_components, outp):
+    views_dir = os.path.join(output_dir, 'src', 'ui', 'views')
+    os.makedirs(views_dir, exist_ok=True)
+    react_native_filename = filename.capitalize().rpartition('.html')[
+        0] + 'View'
+
+    with open(os.path.join(views_dir, react_native_filename + '.js'), "w") as outfile:
+        print("import React from 'react'", file=outfile)
+        print("import { View } from 'react-native'", file=outfile)
+        print("import styled from 'styled-components'\n", file=outfile)
+        print(total_styled_components, file=outfile)
+        print("class " + react_native_filename +
+              " extends React.Component {", file=outfile)
+        print("  render() {", file=outfile)
+        print("    return (", file=outfile)
+        print("      " + outp.prettify(formatter='html'), file=outfile)
+        print("    )", file=outfile)
+        print("  }", file=outfile)
+        print("}\n", file=outfile)
+        print("export default " + react_native_filename, file=outfile)
 
 
 if __name__ == "__main__":
