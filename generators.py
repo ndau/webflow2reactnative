@@ -25,7 +25,7 @@ def use_styled_components():
 def create_styled_component(tag, component_name, component_type, css_dir, selector):
     parser = tinycss.make_parser('page3')
     class_names = tag['class']
-    styled_component = 'const ' + component_name + ' = ' + component_type + '`\n'
+    styled_component = f'const {component_name} = {component_type}`\n'
     css = ''
 
     for subdir, dirs, files in os.walk(css_dir):
