@@ -12,7 +12,7 @@ output_dir = sys.argv[2]
 # This is a list of all the matcher objects. Be aware that if multiple
 # Matchers match the same tag, only the first one that matches gets called.
 matchers = [
-    Matcher("a", "class", "w-button",
+    Matcher("a", "class", "button",
             generators.gen_button, input_dir, output_dir),
     Matcher("input", "class", "text-field",
             generators.gen_textinput, input_dir, output_dir),

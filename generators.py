@@ -66,8 +66,7 @@ def search_for_selector(rule, klass):
                     found_in_filter = True
 
             if not found_in_filter:
-                css_str = css_str + \
-                    str(d.name)+":"+prop_css_val+";\n"
+                css_str += f"{d.name}:{prop_css_val};\n"
 
         return css_str
 
