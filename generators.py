@@ -42,7 +42,8 @@ def create_styled_component(tag, component_name, component_type, css_dir, select
 
 
 def search_for_selector(rule, klass):
-    if rule.selector.as_css() == '.' + klass or rule.selector.as_css() == '#' + klass or rule.selector.as_css() == klass:
+    selector = rule.selector.as_css()
+    if selector == '.' + klass or selector == '#' + klass or selector == klass:
         css_str = ''
         for d in rule.declarations:
             prop_css_val = ' '.join(v.as_css() for v in d.value)
