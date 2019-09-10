@@ -54,7 +54,7 @@ def processInputDir(input_dir, output_dir):
 
 
 def get_template():
-    with open(os.path.join('templates', 'rn_view.template'), encoding='utf8') as f:
+    with open(os.path.join(__file__, 'templates', 'rn_view.template'), encoding='utf8') as f:
         template = f.read()
     return template
 
