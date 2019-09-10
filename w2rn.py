@@ -6,6 +6,7 @@ import generators
 from bs4 import BeautifulSoup
 from matcher import Matcher
 from string import Template
+from pathlib import Path
 
 input_dir = sys.argv[1]
 output_dir = sys.argv[2]
@@ -29,30 +30,27 @@ def process(tag, matchers, output, parent, styled_components):
 
 
 def processInputDir(input_dir, output_dir):
-    for filename in os.listdir(input_dir):
-        if filename.endswith(".html"):
-            with open(os.path.join(input_dir, filename), "r") as infile:
-                inp = BeautifulSoup(infile, "lxml")
+    for path in Path(input_dir).glob("*.html"):
+        with open(path, "r") as infile:
+            inp = BeautifulSoup(infile, "lxml")
 
-            outp = BeautifulSoup("", "lxml")
+        outp = BeautifulSoup("", "lxml")
 
-            # find_all walks the tree in order and emits a list of all tags in the system,
-            # so we don't need to process things recursively.
-            styled_components = ''
-            total_styled_components = ''
-            div = outp.new_tag("View")
-            for ch in inp.body.find_all(True):
-                div, styled_components = process(
-                    ch, matchers, outp, div, styled_components)
-                if styled_components not in total_styled_components:
-                    total_styled_components += styled_components
+        # find_all walks the tree in order and emits a list of all tags in the system,
+        # so we don't need to process things recursively.
+        styled_components = ''
+        total_styled_components = ''
+        div = outp.new_tag("View")
+        for ch in inp.body.find_all(True):
+            div, styled_components = process(
+                ch, matchers, outp, div, styled_components)
+            if styled_components not in total_styled_components:
+                total_styled_components += styled_components
 
-            outp.append(div)
+        outp.append(div)
 
-            writeReactNativeFile(output_dir, filename,
-                                 total_styled_components, outp)
-        else:
-            continue
+        writeReactNativeFile(output_dir, path.name,
+                             total_styled_components, outp)
 
 
 def get_template():
