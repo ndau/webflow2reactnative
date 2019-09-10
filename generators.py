@@ -83,8 +83,6 @@ def gen_button(tag, output, parent, input_dir, output_dir, wrapper_counter):
     bw.append(bt)
     parent.append(bw)
 
-    wrapper_counter += 1
-
     return parent, styled_components
 
 
@@ -99,8 +97,6 @@ def gen_textinput(tag, output, parent, input_dir, output_dir, wrapper_counter):
                                                 os.path.join(
                                                     input_dir, 'css'),
                                                 text)
-
-    wrapper_counter += 1
 
     parent.append(tiw)
     return parent, styled_components

@@ -33,4 +33,5 @@ class Matcher:
         BeautifulSoup object), and a parent (which is where the result should be
         inserted).
         """
+        self.wrapper_counter += 1
         return self.generator(tag, output, parent, self.input_dir, self.output_dir, self.wrapper_counter)

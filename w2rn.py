@@ -42,7 +42,14 @@ def processInputDir(input_dir, output_dir):
 
 
 def get_template():
-    with open(os.path.join(__file__, 'templates', 'rn_view.template'), encoding='utf8') as f:
+    template = ''
+    if '__file__' in vars():
+        template = os.path.join(os.path.dirname(
+            os.path.realpath('__file__')), 'templates', 'rn_view.template')
+    else:
+        template = os.path.join('templates', 'rn_view.template')
+
+    with open(template, encoding='utf8') as f:
         template = f.read()
     return template
 
@@ -73,9 +80,9 @@ if __name__ == "__main__":
     # Matchers match the same tag, only the first one that matches gets called.
     matchers = [
         Matcher("a", "class", "w-button",
-                generators.gen_button, input_dir, output_dir, 1),
+                generators.gen_button, input_dir, output_dir, 0),
         Matcher("input", "class", "text-field",
-                generators.gen_textinput, input_dir, output_dir, 1),
+                generators.gen_textinput, input_dir, output_dir, 0),
     ]
 
     processInputDir(input_dir, output_dir)
