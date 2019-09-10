@@ -8,18 +8,6 @@ from matcher import Matcher
 from string import Template
 from pathlib import Path
 
-input_dir = sys.argv[1]
-output_dir = sys.argv[2]
-
-# This is a list of all the matcher objects. Be aware that if multiple
-# Matchers match the same tag, only the first one that matches gets called.
-matchers = [
-    Matcher("a", "class", "w-button",
-            generators.gen_button, input_dir, output_dir),
-    Matcher("input", "class", "text-field",
-            generators.gen_textinput, input_dir, output_dir),
-]
-
 
 def process(tag, matchers, output, parent, styled_components):
     for m in matchers:
@@ -80,5 +68,14 @@ if __name__ == "__main__":
 
     input_dir = sys.argv[1]
     output_dir = sys.argv[2]
+
+    # This is a list of all the matcher objects. Be aware that if multiple
+    # Matchers match the same tag, only the first one that matches gets called.
+    matchers = [
+        Matcher("a", "class", "w-button",
+                generators.gen_button, input_dir, output_dir, 1),
+        Matcher("input", "class", "text-field",
+                generators.gen_textinput, input_dir, output_dir, 1),
+    ]
 
     processInputDir(input_dir, output_dir)

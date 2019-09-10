@@ -58,50 +58,40 @@ def search_for_selector(rule, klass):
 
         return css_str
 
-# the generator for a Button
 
-
-button_wrapper_counter = 1
-
-
-def gen_button(tag, output, parent, input_dir, output_dir):
-    global button_wrapper_counter
+def gen_button(tag, output, parent, input_dir, output_dir, wrapper_counter):
     text = tag.text
 
-    bw = output.new_tag(f"ButtonWrapper{button_wrapper_counter}")
+    rn_tag_name = f"ButtonWrapper{wrapper_counter}"
+    bw = output.new_tag(rn_tag_name)
     styled_components = create_styled_component(tag,
-                                                f"ButtonWrapper{button_wrapper_counter}",
+                                                rn_tag_name,
                                                 "styled.TouchableOpacity",
                                                 os.path.join(
                                                     input_dir, 'css'),
                                                 text)
 
     styled_components += create_styled_component(tag,
-                                                 f"ButtonText{button_wrapper_counter}",
+                                                 rn_tag_name,
                                                  "styled.Text",
                                                  os.path.join(
                                                      input_dir, 'css'),
                                                  text)
 
-    bt = output.new_tag(f"ButtonText{button_wrapper_counter}")
+    bt = output.new_tag(rn_tag_name)
     bt.append(text)
     bw.append(bt)
     parent.append(bw)
 
-    button_wrapper_counter += 1
+    wrapper_counter += 1
 
     return parent, styled_components
 
 
-# the generator for a text input
-text_input_counter = 1
-
-
-def gen_textinput(tag, output, parent, input_dir, output_dir):
-    global text_input_counter
+def gen_textinput(tag, output, parent, input_dir, output_dir, wrapper_counter):
     text = tag.text
 
-    rn_tag_name = f"TextInputWrapper{text_input_counter}"
+    rn_tag_name = f"TextInputWrapper{wrapper_counter}"
     tiw = output.new_tag(rn_tag_name)
     styled_components = create_styled_component(tag,
                                                 rn_tag_name,
@@ -109,6 +99,8 @@ def gen_textinput(tag, output, parent, input_dir, output_dir):
                                                 os.path.join(
                                                     input_dir, 'css'),
                                                 text)
+
+    wrapper_counter += 1
 
     parent.append(tiw)
     return parent, styled_components

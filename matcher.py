@@ -1,17 +1,20 @@
 #! /usr/bin/env python3
-
-# A matcher accepts a list of tag, attribute, value, process. When all of the first
-# 3 match, then the generator function is called on the matching tag.
+from dataclasses import dataclass
 
 
+@dataclass
 class Matcher:
-    def __init__(self, name, attribute, value, generator, input_dir, output_dir):
-        self.name = name
-        self.attribute = attribute
-        self.value = value
-        self.generator = generator
-        self.input_dir = input_dir
-        self.output_dir = output_dir
+    """
+    A matcher accepts a list of tag, attribute, value, process. When all of the first
+    3 match, then the generator function is called on the matching tag.
+    """
+    name: str
+    attribute: str
+    value: str
+    generator: object
+    input_dir: str
+    output_dir: str
+    wrapper_counter: int
 
     def match(self, tag):
         if tag.name != self.name:
@@ -30,4 +33,4 @@ class Matcher:
         BeautifulSoup object), and a parent (which is where the result should be
         inserted).
         """
-        return self.generator(tag, output, parent, self.input_dir, self.output_dir)
+        return self.generator(tag, output, parent, self.input_dir, self.output_dir, self.wrapper_counter)
