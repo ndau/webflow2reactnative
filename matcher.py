@@ -19,6 +19,10 @@ class Matcher:
     def match(self, tag):
         if tag.name != self.name:
             return False
+
+        # if tag.name == self.name and self.attribute is None:
+        #     return True
+
         for k, v in tag.attrs.items():
             if k == self.attribute:
                 if isinstance(v, list):

@@ -81,8 +81,18 @@ if __name__ == "__main__":
     matchers = [
         Matcher("a", "class", "w-button",
                 generators.gen_button, input_dir, output_dir, 0),
-        Matcher("input", "class", "text-field",
+        Matcher("a", "class", "link",
+                generators.gen_button, input_dir, output_dir, 0),
+        Matcher("div", "class", "w-container",
+                generators.gen_view, input_dir, output_dir, 0),
+        Matcher("div", "class", "w-form",
+                generators.gen_view, input_dir, output_dir, 0),
+        Matcher("input", "class", "w-input",
                 generators.gen_textinput, input_dir, output_dir, 0),
+        Matcher("body", "class", "outercontainertop",
+                generators.gen_view, input_dir, output_dir, 0),
+        Matcher("h1", "class", "heading",
+                generators.gen_text, input_dir, output_dir, 0),
     ]
 
     processInputDir(input_dir, output_dir)

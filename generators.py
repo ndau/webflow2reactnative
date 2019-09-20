@@ -8,12 +8,13 @@ from tinycss.css21 import CSS21Parser
 # below is a list of keys it does not support
 # or it does not work well in RN
 rn_css_filter = ["webkit", "ms-", "inline-block",
-                 "line-height", "cursor", "block"]
+                 "line-height", "cursor", "block", "clear", "order"]
 
 
 def create_styled_component(tag, component_name, component_type, css_dir, selector):
     parser = tinycss.make_parser('page3')
-    class_names = tag['class']
+
+    class_names = tag.get('class', '')
     styled_component = f'const {component_name} = {component_type}`\n'
     css = ''
 
@@ -94,6 +95,39 @@ def gen_textinput(tag, output, parent, input_dir, output_dir, wrapper_counter):
     styled_components = create_styled_component(tag,
                                                 rn_tag_name,
                                                 "styled.TextInput",
+                                                os.path.join(
+                                                    input_dir, 'css'),
+                                                text)
+
+    parent.append(tiw)
+    return parent, styled_components
+
+
+def gen_text(tag, output, parent, input_dir, output_dir, wrapper_counter):
+    text = tag.text
+
+    rn_tag_name = f"TextWrapper{wrapper_counter}"
+    tiw = output.new_tag(rn_tag_name)
+    tiw.string = text
+    styled_components = create_styled_component(tag,
+                                                rn_tag_name,
+                                                "styled.Text",
+                                                os.path.join(
+                                                    input_dir, 'css'),
+                                                text)
+
+    parent.append(tiw)
+    return parent, styled_components
+
+
+def gen_view(tag, output, parent, input_dir, output_dir, wrapper_counter):
+    text = tag.text
+
+    rn_tag_name = f"Div{wrapper_counter}"
+    tiw = output.new_tag(rn_tag_name)
+    styled_components = create_styled_component(tag,
+                                                rn_tag_name,
+                                                "styled.View",
                                                 os.path.join(
                                                     input_dir, 'css'),
                                                 text)
