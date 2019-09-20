@@ -8,6 +8,7 @@ class Matcher:
     A matcher accepts a list of tag, attribute, value, process. When all of the first
     3 match, then the generator function is called on the matching tag.
     """
+
     name: str
     attribute: str
     value: str
@@ -38,4 +39,6 @@ class Matcher:
         inserted).
         """
         self.wrapper_counter += 1
-        return self.generator(tag, output, parent, self.input_dir, self.output_dir, self.wrapper_counter)
+        return self.generator(
+            tag, output, parent, self.input_dir, self.output_dir, self.wrapper_counter
+        )
