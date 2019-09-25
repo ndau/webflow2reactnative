@@ -16,7 +16,22 @@ def process(tag, matchers, output, parent):
         if m.match(tag):
             return m.generate(tag, output, parent)
 
-    return parent
+    return parent, parent
+
+
+def handle_tag(tag, matchers, output, outparent):
+    """
+    tag is the tag to check
+    outparent is the node to attach any generated object to
+    """
+
+    # outchild is the parent if we don't overwrite it
+    outchild = outparent
+    for ch in tag.find_all(recursive=False):
+        outparent, outchild = process(ch, matchers, output, outparent)
+        outchild = handle_tag(ch, matchers, output, outchild)
+
+    return outparent, outchild
 
 
 def processInputDir(input_dir, output_dir, sc):
@@ -29,8 +44,9 @@ def processInputDir(input_dir, output_dir, sc):
         # find_all walks the tree in order and emits a list of all tags in the system,
         # so we don't need to process things recursively.
         div = outp.new_tag("View")
-        for ch in inp.body.find_all(True):
-            div = process(ch, matchers, outp, div)
+        div, junk = handle_tag(inp.body, matchers, outp, div)
+        # for ch in inp.body.find_all(True):
+        #     div = process(ch, matchers, outp, div)
 
         outp.append(div)
 

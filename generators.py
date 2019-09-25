@@ -18,53 +18,50 @@ rn_css_excludes = [
 ]
 
 
-def gen_button(tag, output, parent, wrapper_counter, sc):
-    text = tag.text
+def _gen_generic(tagname, componentname, tag, output, parent, wrapper_counter, sc):
+    rn_tag_name = f"{tagname}{wrapper_counter}"
+    child = output.new_tag(rn_tag_name)
+    sc.create_styled_component(tag, rn_tag_name, componentname)
 
-    rn_tag_name = f"ButtonWrapper{wrapper_counter}"
-    bw = output.new_tag(rn_tag_name)
+    parent.append(child)
+    return parent, child
 
-    sc.create_styled_component(tag, rn_tag_name, "styled.TouchableOpacity")
 
-    sc.create_styled_component(tag, rn_tag_name, "styled.Text")
+def _gen_generic_text(tagname, componentname, tag, output, parent, wrapper_counter, sc):
+    rn_tag_name = f"{tagname}{wrapper_counter}"
+    child = output.new_tag(rn_tag_name)
+    child.string = tag.text
+    sc.create_styled_component(tag, rn_tag_name, componentname)
 
-    bt = output.new_tag(rn_tag_name)
-    bt.append(text)
-    bw.append(bt)
-    parent.append(bw)
-
-    return parent
-
+    parent.append(child)
+    return parent, child
 
 def gen_textinput(tag, output, parent, wrapper_counter, sc):
-    text = tag.text
-
-    rn_tag_name = f"TextInputWrapper{wrapper_counter}"
-    tiw = output.new_tag(rn_tag_name)
-    sc.create_styled_component(tag, rn_tag_name, "styled.TextInput")
-
-    parent.append(tiw)
-    return parent
-
-
-def gen_text(tag, output, parent, wrapper_counter, sc):
-    text = tag.text
-
-    rn_tag_name = f"TextWrapper{wrapper_counter}"
-    tiw = output.new_tag(rn_tag_name)
-    tiw.string = text
-    sc.create_styled_component(tag, rn_tag_name, "styled.Text")
-
-    parent.append(tiw)
-    return parent
+    return _gen_generic("TextInputWrapper", "styled.TextInput",
+        tag, output, parent, wrapper_counter, sc)
 
 
 def gen_view(tag, output, parent, wrapper_counter, sc):
+    return _gen_generic("Div", "styled.View",
+        tag, output, parent, wrapper_counter, sc)
+
+
+def gen_text(tag, output, parent, wrapper_counter, sc):
+    return _gen_generic_text("TextWrapper", "styled.Text",
+        tag, output, parent, wrapper_counter, sc)
+
+
+def gen_button(tag, output, parent, wrapper_counter, sc):
+    rn_tag_name = f"ButtonWrapper{wrapper_counter}"
+
+    sc.create_styled_component(tag, rn_tag_name, "styled.TouchableOpacity")
+    sc.create_styled_component(tag, rn_tag_name, "styled.Text")
+
+    child = output.new_tag(rn_tag_name)
     text = tag.text
+    child.append(text)
+    parent.append(child)
 
-    rn_tag_name = f"Div{wrapper_counter}"
-    tiw = output.new_tag(rn_tag_name)
-    sc.create_styled_component(tag, rn_tag_name, "styled.View")
+    return parent, child
 
-    parent.append(tiw)
-    return parent
+
