@@ -7,7 +7,7 @@ $styled_components
 class IndexView extends React.Component {
   render () {
     return (
-      $jsx
+$jsx
     )
   }
 }
