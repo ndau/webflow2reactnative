@@ -43,7 +43,7 @@ def processInputDir(input_dir, output_dir, sc):
 
         # find_all walks the tree in order and emits a list of all tags in the system,
         # so we don't need to process things recursively.
-        div = outp.new_tag("View")
+        div = outp.new_tag("Body")
         div, junk = handle_tag(inp.body, matchers, outp, div)
         # for ch in inp.body.find_all(True):
         #     div = process(ch, matchers, outp, div)
@@ -73,7 +73,8 @@ def get_template():
 def writeReactNativeFile(output_dir, filename, sc, outp):
     views_dir = os.path.join(output_dir, "src", "ui", "views")
     os.makedirs(views_dir, exist_ok=True)
-    react_native_filename = filename.capitalize().rpartition(".html")[0] + "View"
+    react_native_filename = filename.capitalize().rpartition(".html")[
+        0] + "View"
 
     template = Template(get_template())
     content = template.substitute(
@@ -99,11 +100,18 @@ if __name__ == "__main__":
     matchers = [
         Matcher("a", "class", "w-button", generators.gen_button, sc),
         Matcher("a", "class", "link", generators.gen_button, sc),
+        Matcher("input", "class", "w-button", generators.gen_button, sc),
+        Matcher("form", "class", "form", generators.gen_view, sc),
         Matcher("div", "class", "w-container", generators.gen_view, sc),
         Matcher("div", "class", "w-form", generators.gen_view, sc),
+        Matcher("div", "class", "buttoncontainer", generators.gen_view, sc),
         Matcher("input", "class", "w-input", generators.gen_textinput, sc),
         Matcher("body", "class", "outercontainertop", generators.gen_view, sc),
         Matcher("h1", "class", "heading", generators.gen_text, sc),
+        Matcher("div", "class", "text-block-2", generators.gen_text, sc),
+        Matcher("div", "class", "text-block-4", generators.gen_text, sc),
+        Matcher("section", "class", "containerbottom",
+                generators.gen_view, sc),
     ]
 
     processInputDir(input_dir, output_dir, sc)

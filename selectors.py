@@ -16,8 +16,14 @@ rn_css_excludes = [
     "cursor",
     "block",
     "clear",
-    "order",
+    "none #",
+    'grid-auto-columns',
+    'grid-column-gap',
+    'grid-row-gap',
+    'grid-template-columns',
+    'grid-template-rows'
 ]
+
 
 @dataclass
 class Component:
@@ -30,9 +36,34 @@ class Component:
     css_rules: object
 
     def generate(self):
+        self.filter_css()
         rules = [f"{k}: {self.css_rules[k]};" for k in self.css_rules]
         css = "\n  ".join(rules)
         return f"const {self.name} = {self.typ}`\n  {css}`\n\n"
+
+    def filter_css(self):
+        # This may be temporary but I am placing in the correct
+        # flex default since we are going to RN. Row is not default
+        # in RN like it is in CSS web.
+        self.css_rules.update({"flex-direction": "row"})
+
+        # Text inputs do not grow by default and I believe we want them to
+        if "TextInput" in self.typ:
+            self.css_rules.update({"flex-grow": "1"})
+
+        # Links need to be underlined
+        if "Link" in self.name:
+            self.css_rules.update({"text-decoration-line": "underline"})
+
+        # remove specific keys
+        for attr, value in list(self.css_rules.items()):
+            if attr == "order":
+                del self.css_rules[attr]
+
+        # change values
+        for attr, value in self.css_rules.items():
+            if value == "'Open Sans', sans-serif":
+                self.css_rules.update({"font-family": "opensans-regular"})
 
 
 @dataclass
@@ -42,9 +73,8 @@ class SelectorCollector:
     """
 
     css_dir: str
-    components: object = field(default_factory = dict)
+    components: object = field(default_factory=dict)
     wrapper_counter: int = 0
-
 
     def _all_css_files(self):
         """ generator helper for the names of all css files in self.css_dir """
@@ -54,7 +84,6 @@ class SelectorCollector:
 
                 if filepath.endswith(".css"):
                     yield filepath
-
 
     def _lookup_rules(self, rule, klass):
         """
@@ -68,7 +97,6 @@ class SelectorCollector:
 
         for d in rule.declarations:
             prop_css_val = "".join(v.as_css() for v in d.value)
-
             excluded = False
             for exclude in rn_css_excludes:
                 if exclude in d.name or exclude in prop_css_val:
@@ -97,10 +125,11 @@ class SelectorCollector:
                         except AttributeError:
                             for media_rule in rule.rules:
                                 for klass in class_names:
-                                    css_rules.update(self._lookup_rules(media_rule, klass))
+                                    css_rules.update(
+                                        self._lookup_rules(media_rule, klass))
 
-        self.components[component_name] = Component(component_name, component_type, css_rules)
-
+        self.components[component_name] = Component(
+            component_name, component_type, css_rules)
 
     def generate(self):
         output = ""

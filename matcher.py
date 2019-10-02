@@ -37,4 +37,5 @@ class Matcher:
         inserted).
         """
         Matcher.wrapper_counter += 1
-        return self.generator(tag, output, parent, Matcher.wrapper_counter, self.selector)
+        return self.generator(tag, output, parent,
+                              Matcher.wrapper_counter, self.selector)
