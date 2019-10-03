@@ -102,7 +102,7 @@ class SelectorCollector:
                 if exclude in d.name or exclude in prop_css_val:
                     excluded = True
 
-            if not excluded:
+            if not excluded and d.name not in css_rules:
                 css_rules[d.name] = prop_css_val
 
         return css_rules
