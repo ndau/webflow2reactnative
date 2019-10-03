@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { createButtons, addTextInputAttributes } from './ComponentHelper'
+import ComponentHelper from './ComponentHelper'
 import { Animated } from 'react-native'
 
 const Body = styled.View`
@@ -14,7 +14,7 @@ const Body = styled.View`
 
 $styled_components
 
-class IndexView extends React.Component {
+class BuoyantWalletView extends React.Component {
   render () {
     return (
 $jsx
@@ -22,4 +22,4 @@ $jsx
   }
 }
 
-export default IndexView
+export default BuoyantWalletView
