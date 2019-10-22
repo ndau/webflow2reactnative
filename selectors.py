@@ -131,8 +131,11 @@ class SelectorCollector:
         self.components[component_name] = Component(
             component_name, component_type, css_rules)
 
-    def generate(self):
+    def generate(self, jsx):
         output = ""
+        formattedJsx = jsx.prettify(formatter="html")
         for name in self.components:
-            output += self.components[name].generate()
+            tag = '<' + name + '>'
+            if tag in formattedJsx:
+                output += self.components[name].generate()
         return output

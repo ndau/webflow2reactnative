@@ -73,12 +73,12 @@ def get_template():
 def writeReactNativeFile(output_dir, filename, sc, outp):
     views_dir = os.path.join(output_dir, "src", "ui", "views")
     os.makedirs(views_dir, exist_ok=True)
-    react_native_filename = filename.capitalize().rpartition(".html")[
-        0] + "View"
+    react_native_filename = filename.rpartition(".html")[
+        0]
 
     template = Template(get_template())
     content = template.substitute(
-        styled_components=sc.generate(), jsx=outp.prettify(formatter="html")
+        styled_components=sc.generate(outp), jsx=outp.prettify(formatter="html")
     )
 
     with open(os.path.join(views_dir, react_native_filename + ".js"), "w") as outfile:
@@ -108,6 +108,8 @@ if __name__ == "__main__":
         Matcher("input", "class", "w-input", generators.gen_textinput, sc),
         Matcher("body", "class", "outercontainertop", generators.gen_view, sc),
         Matcher("h1", "class", "heading", generators.gen_text, sc),
+        Matcher("strong", "class", "bold-text", generators.gen_text, sc),
+        Matcher("strong", "class", "bold-text-2", generators.gen_text, sc),
         Matcher("div", "class", "text-block-2", generators.gen_text, sc),
         Matcher("div", "class", "text-block-4", generators.gen_text, sc),
         Matcher("section", "class", "containerbottom",

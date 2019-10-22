@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <!--  This site was created in Webflow. http://www.webflow.com  -->
 <!--  Last Published: Tue Oct 22 2019 17:05:13 GMT+0000 (UTC)  -->
-<html data-wf-page="5d93a28fda410f0bf78c2e02" data-wf-site="5d6ec54fa1a9c96b4dc66c20">
+<html data-wf-page="5da99023a2089f17905b1e85" data-wf-site="5d6ec54fa1a9c96b4dc66c20">
 <head>
   <meta charset="utf-8">
-  <title>12WordPhrase</title>
-  <meta content="12WordPhrase" property="og:title">
+  <title>GetRecoveryPhrase</title>
+  <meta content="GetRecoveryPhrase" property="og:title">
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <meta content="Webflow" name="generator">
   <link href="css/normalize.css" rel="stylesheet" type="text/css">
@@ -20,9 +20,21 @@
 </head>
 <body class="outercontainertop">
   <div class="innercontainertop w-container">
-    <h1 class="heading">We are about to create the secure recovery phrase, which is the key to restoring your wallet.<br><br>You must WRITE IT DOWN and store it in a secure location, or risk losing access to your funds. <br><br>Do not save this phrase on your device or in the cloud.</h1>
-  </div>
-  <section class="containerbottom"><a href="#" class="button-2 w-button">create new wallet</a></section>
+    <h1 class="heading">Type your 12 word recovery phrase below to recover your wallet.</h1><a href="#" class="link">I don’t have my recovery phrase</a></div>
+  <section class="containerbottom">
+    <div class="text-block-4">Recovery phrase word 1 of 12</div>
+    <div class="form-block w-form">
+      <form id="email-form" name="email-form" data-name="Email Form" class="form"><input type="submit" value="&lt;" data-wait="Please wait..." class="submit-button w-button"><input type="text" maxlength="256" placeholder="Please type your first word" id="node" class="text-field w-input"><input type="submit" value="&gt;" data-wait="Please wait..." class="submit-button-2 w-button"></form>
+      <div class="w-form-done">
+        <div>Thank you! Your submission has been received!</div>
+      </div>
+      <div class="w-form-fail">
+        <div>Oops! Something went wrong while submitting the form.</div>
+      </div>
+    </div>
+    <div class="text-block-2">Suggested words</div>
+    <div class="div-block-4"><a href="#" class="recoverbutton w-button">Chair</a></div>
+  </section>
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="js/webflow.js" type="text/javascript"></script>
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
