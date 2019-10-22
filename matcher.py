@@ -1,24 +1,27 @@
 #! /usr/bin/env python3
+import typing
 from dataclasses import dataclass
 
 
 @dataclass
 class Matcher:
     """
-    A matcher accepts a list of tag, attribute, value, process. When all of the first
+    A matcher accepts a list of tag, attribute, value, generator. When all of the first
     3 match, then the generator function is called on the matching tag.
     """
+
     name: str
     attribute: str
     value: str
     generator: object
-    input_dir: str
-    output_dir: str
-    wrapper_counter: int
+    selector: object
+
+    wrapper_counter: typing.ClassVar[int] = 0
 
     def match(self, tag):
         if tag.name != self.name:
             return False
+
         for k, v in tag.attrs.items():
             if k == self.attribute:
                 if isinstance(v, list):
@@ -33,5 +36,6 @@ class Matcher:
         BeautifulSoup object), and a parent (which is where the result should be
         inserted).
         """
-        self.wrapper_counter += 1
-        return self.generator(tag, output, parent, self.input_dir, self.output_dir, self.wrapper_counter)
+        Matcher.wrapper_counter += 1
+        return self.generator(tag, output, parent,
+                              Matcher.wrapper_counter, self.selector)

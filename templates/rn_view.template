@@ -1,15 +1,25 @@
 import React from 'react'
-import { View } from 'react-native'
 import styled from 'styled-components'
+import ComponentHelper from './ComponentHelper'
+import { Animated } from 'react-native'
+
+const Body = styled.View`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: baseline;
+  background-color: #15232a;
+  text-align: left;
+`
 
 $styled_components
 
-class IndexView extends React.Component {
+class BuoyantWalletView extends React.Component {
   render () {
     return (
-      $jsx
+$jsx
     )
   }
 }
 
-export default IndexView
+export default BuoyantWalletView
