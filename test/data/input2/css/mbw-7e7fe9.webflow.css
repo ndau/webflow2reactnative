@@ -83,6 +83,7 @@
   display: -ms-flexbox;
   display: flex;
 }
+
   .titlebar {
     display: block;
     padding-right: 16px;
