@@ -3,6 +3,10 @@
 import os
 import tinycss
 
+tags_to_exclude_text = [
+    "h1",
+]
+
 
 def _gen_generic(tagname, componentname, tag, output, parent, wrapper_counter, sc):
     rn_tag_name = f"{tagname}{wrapper_counter}"
@@ -22,6 +26,7 @@ def _gen_generic(tagname, componentname, tag, output, parent, wrapper_counter, s
 def _gen_generic_text(tagname, componentname, tag, output, parent, wrapper_counter, sc):
     rn_tag_name = f"{tagname}{wrapper_counter}"
     child = output.new_tag(rn_tag_name)
+    # if tag.name not in tags_to_exclude_text and 'Welcome' not in tagname:
     child.string = tag.text
 
     sc.create_styled_component(tag, rn_tag_name, componentname)
