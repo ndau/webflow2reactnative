@@ -21,7 +21,8 @@ rn_css_excludes = [
     'grid-column-gap',
     'grid-row-gap',
     'grid-template-columns',
-    'grid-template-rows'
+    'grid-template-rows',
+    'static'
 ]
 
 
