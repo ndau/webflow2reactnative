@@ -2,10 +2,27 @@
 
 import os
 import tinycss
+import html
 
 tags_to_exclude_text = [
     "h1",
 ]
+
+# Gloabl translation_keys list used by str_cook, which is used by all generators
+# This gets set when
+tns_keys = []
+
+
+def str_cook(s):
+    '''
+    Preprocesses the string to
+    1) unescape any html entities (artifact from webflow output)
+    2) add i18n calls for recognized keys
+    '''
+    s = html.unescape(s)
+    if s.strip() in tns_keys:
+        s = f"i18n.t('{s}')"
+    return s
 
 
 def _gen_generic(tagname, componentname, tag, output, parent, wrapper_counter, sc):
@@ -13,12 +30,10 @@ def _gen_generic(tagname, componentname, tag, output, parent, wrapper_counter, s
     child = output.new_tag(rn_tag_name)
     try:
         if tag['placeholder']:
-            child['placeholder'] = tag['placeholder']
+            child['placeholder'] = str_cook(tag['placeholder'])
     except KeyError:
         pass
-
     sc.create_styled_component(tag, rn_tag_name, componentname)
-
     parent.append(child)
     return parent, child
 
@@ -27,10 +42,8 @@ def _gen_generic_text(tagname, componentname, tag, output, parent, wrapper_count
     rn_tag_name = f"{tagname}{wrapper_counter}"
     child = output.new_tag(rn_tag_name)
     # if tag.name not in tags_to_exclude_text and 'Welcome' not in tagname:
-    child.string = tag.text
-
+    child.string = str_cook(tag.text)
     sc.create_styled_component(tag, rn_tag_name, componentname)
-
     parent.append(child)
     return parent, child
 
@@ -60,6 +73,8 @@ def gen_button(tag, output, parent, wrapper_counter, sc):
     text = tag.text
     if not text:
         text = tag['value']
+
+    text = str_cook(text)
     child.append(text)
     parent.append(child)
 
@@ -76,6 +91,7 @@ def gen_link(tag, output, parent, wrapper_counter, sc):
     text = tag.text
     if not text:
         text = tag['value']
+    text = str_cook(text)
     child.append(text)
     parent.append(child)
 

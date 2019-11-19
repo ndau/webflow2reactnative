@@ -108,11 +108,11 @@ class SelectorCollector:
 
         return css_rules
 
-    def create_styled_component(self, tag, component_name, component_type):
+    def create_styled_component(self, tag, component_name, component_type="test"):
         parser = tinycss.make_parser()
 
         class_names = tag.get("class", "")
-        components = {}
+        self.components = {}
         css_rules = {}
 
         for filepath in self._all_css_files():
