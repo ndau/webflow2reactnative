@@ -85,7 +85,7 @@ def writeReactNativeFile(output_dir, filename, sc, outp):
 
     template = Template(get_template())
     content = template.substitute(
-        styled_components=sc.generate(outp), jsx=outp.prettify(formatter="html")
+        styled_components=sc.generate(outp), jsx=outp.prettify(formatter="minimal")
     )
 
     with open(os.path.join(views_dir, react_native_filename + ".js"), "w") as outfile:
