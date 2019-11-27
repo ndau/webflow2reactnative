@@ -7,8 +7,9 @@ from bs4 import BeautifulSoup
 from matcher import Matcher
 from string import Template
 from pathlib import Path
+from helpers import steprint, parse_args, ensure_output_dir, load_lng_file
 
-from selectors import SelectorCollector
+from selector_collector import SelectorCollector
 
 
 def process(tag, matchers, output, parent):
@@ -25,17 +26,22 @@ def handle_tag(tag, matchers, output, outparent):
     outparent is the node to attach any generated object to
     """
 
+    sys.stderr.write(".")  # show progress
+    sys.stderr.flush()
     # outchild is the parent if we don't overwrite it
     outchild = outparent
     for ch in tag.find_all(recursive=False):
-        outparent, outchild = process(ch, matchers, output, outparent)
+        outparent, outchild = process(
+            ch, matchers, output, outparent)
         outchild = handle_tag(ch, matchers, output, outchild)
 
     return outparent, outchild
 
 
-def processInputDir(input_dir, output_dir, sc):
+def processInputDir(input_dir, output_dir, sc, matchers):
+
     for path in Path(input_dir).glob("*.html"):
+        sys.stderr.write(f"\n{path}")  # show progress
         with open(path, "r") as infile:
             inp = BeautifulSoup(infile, "lxml")
 
@@ -51,6 +57,7 @@ def processInputDir(input_dir, output_dir, sc):
         outp.append(div)
 
         writeReactNativeFile(output_dir, path.name, sc, outp)
+    steprint()  # print new line
 
 
 def get_template():
@@ -73,12 +80,11 @@ def get_template():
 def writeReactNativeFile(output_dir, filename, sc, outp):
     views_dir = os.path.join(output_dir, "src", "ui", "views")
     os.makedirs(views_dir, exist_ok=True)
-    react_native_filename = filename.rpartition(".html")[
-        0]
+    react_native_filename = filename.rpartition(".html")[0]
 
     template = Template(get_template())
     content = template.substitute(
-        styled_components=sc.generate(outp), jsx=outp.prettify(formatter="html")
+        styled_components=sc.generate(outp), jsx=outp.prettify(formatter="minimal")
     )
 
     with open(os.path.join(views_dir, react_native_filename + ".js"), "w") as outfile:
@@ -86,17 +92,21 @@ def writeReactNativeFile(output_dir, filename, sc, outp):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python3 w2rn.py <input-dir> <output-dir>")
-        exit(1)
 
-    input_dir = sys.argv[1]
-    output_dir = sys.argv[2]
+    args = parse_args(sys.argv[1:])
+    input_dir = args['input_dir']
+    output_dir = args['output_dir']
+    lng_file = args['lng_file']
+
+    ensure_output_dir(output_dir)
+
+    # Change the gloabl translation key list for the generators
+    generators.tns_keys = load_lng_file(lng_file)
 
     sc = SelectorCollector(os.path.join(input_dir, "css"))
 
     # This is a list of all the matcher objects. Be aware that if multiple
-    # Matchers match the same tag, only the first one that matches gets called.
+    # Matchers match the same tag, only the first one that matches gets called
     matchers = [
         Matcher("a", "class", "w-button", generators.gen_button, sc),
         Matcher("a", "class", "link", generators.gen_button, sc),
@@ -119,5 +129,6 @@ if __name__ == "__main__":
         Matcher("section", "class", "containerbottom",
                 generators.gen_view, sc),
     ]
-
-    processInputDir(input_dir, output_dir, sc)
+    steprint("Processing...", end='')
+    processInputDir(input_dir, output_dir, sc, matchers)
+    steprint("Done")

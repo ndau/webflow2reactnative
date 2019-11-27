@@ -8,10 +8,13 @@ python3 -m pip install -r requirements.txt
 
 ## Usage
 ```console
-Usage: python3 w2rn.py <input-dir> <output-dir>
+Usage: python3 w2rn.py <input-dir> <output-dir> [--lng-file <file-path>]
 ```
+
 ### `input-dir`
+
 This is the directory that contains the Webflow extracted data. For example you will see something like this
+
 ```
 .
 +-- css
@@ -24,8 +27,11 @@ This is the directory that contains the Webflow extracted data. For example you 
 +-- index.html
 ...
 ```
+
 ### `output-dir`
+
 This is the directory which will house all React Native code generated from the Webflow exported data in `input-dir`. Here is an example of some output:
+
 ```
 +-- src
 |   +-- ui
@@ -34,4 +40,15 @@ This is the directory which will house all React Native code generated from the 
 |   |   |   +-- ...
 ```
 
+### `--lng-file <file-path>`
 
+This option points to a JS file that defines translations in the following format:
+
+```
+export default {
+  // comment on string
+  'my-string' : 'This is my translation'
+}
+```
+
+Any occurrence of `my-string` will be replaced with `i18n.t('my-string')`.
