@@ -11,11 +11,11 @@ tags_to_exclude_text = [
 def _gen_generic(tagname, componentname, tag, output, parent, wrapper_counter, sc):
     rn_tag_name = f"{tagname}{wrapper_counter}"
     child = output.new_tag(rn_tag_name)
-    try:
-        if tag['placeholder']:
-            child['placeholder'] = tag['placeholder']
-    except KeyError:
-        pass
+    # try:
+    #     if tag['placeholder']:
+    #         child['placeholder'] = tag['placeholder']
+    # except KeyError:
+    #     pass
 
     sc.create_styled_component(tag, rn_tag_name, componentname)
 
