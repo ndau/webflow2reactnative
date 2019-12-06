@@ -40,7 +40,6 @@ This is the directory which will house all React Native code generated from the 
 |   |   |   +-- ...
 ```
 
-<<<<<<< HEAD
 ## What do I do with this generated JS?
 The JS is ready to be used in a React Native project. We will refer to our `buoyantwallet` repository as this is the first repo to utilize this tool.
 
@@ -98,7 +97,6 @@ If things do not show up that can sometimes mean that we still have `flex-direct
 The first thing to try when things don't show up is systematically (from the inside out) removing `flex-direction: row` from the `styled-component`. If that does not work, then it is time to start commenting out sections of code to see if those other sections work...and perhaps the entire piece is not working.
 
 Really, it's down to you playing with the CSS to get thing to show up. This doesn't happen often but does when there are a lot of items on the screen.
-=======
 ### `--lng-file <file-path>`
 
 This option points to a JS file that defines translations in the following format:
@@ -111,4 +109,3 @@ export default {
 ```
 
 Any occurrence of `my-string` will be replaced with `i18n.t('my-string')`.
->>>>>>> origin
