@@ -8,10 +8,13 @@ python3 -m pip install -r requirements.txt
 
 ## Usage
 ```console
-Usage: python3 w2rn.py <input-dir> <output-dir>
+Usage: python3 w2rn.py <input-dir> <output-dir> [--lng-file <file-path>]
 ```
+
 ### `input-dir`
+
 This is the directory that contains the Webflow extracted data. For example you will see something like this
+
 ```
 .
 +-- css
@@ -24,8 +27,11 @@ This is the directory that contains the Webflow extracted data. For example you 
 +-- index.html
 ...
 ```
+
 ### `output-dir`
+
 This is the directory which will house all React Native code generated from the Webflow exported data in `input-dir`. Here is an example of some output:
+
 ```
 +-- src
 |   +-- ui
@@ -34,6 +40,7 @@ This is the directory which will house all React Native code generated from the 
 |   |   |   +-- ...
 ```
 
+<<<<<<< HEAD
 ## What do I do with this generated JS?
 The JS is ready to be used in a React Native project. We will refer to our `buoyantwallet` repository as this is the first repo to utilize this tool.
 
@@ -91,3 +98,17 @@ If things do not show up that can sometimes mean that we still have `flex-direct
 The first thing to try when things don't show up is systematically (from the inside out) removing `flex-direction: row` from the `styled-component`. If that does not work, then it is time to start commenting out sections of code to see if those other sections work...and perhaps the entire piece is not working.
 
 Really, it's down to you playing with the CSS to get thing to show up. This doesn't happen often but does when there are a lot of items on the screen.
+=======
+### `--lng-file <file-path>`
+
+This option points to a JS file that defines translations in the following format:
+
+```
+export default {
+  // comment on string
+  'my-string' : 'This is my translation'
+}
+```
+
+Any occurrence of `my-string` will be replaced with `i18n.t('my-string')`.
+>>>>>>> origin
