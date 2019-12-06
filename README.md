@@ -78,7 +78,16 @@ Matcher("a", "class", "w-button", generators.gen_button, sc)
 Here we are saying...
 When you hit the tag/element `a` with `w-button` as an item within the `class` attribute, then call `generators.gen_button`. By item in there, there could be a comma separated list of classes, `w-button` just needs to be one of them. If you look at `generators.gen_button` this will create the `styled-component` and set itself in the heirarchy of components. 
 
-Once have implemented simply refer back to 
+#### Pitfalls you may run into
+This section will describe the various things I have come across that will need to be addressed at some point. However, these are my workaround that got me by fine.
+##### Unsupported CSS
+When you execute after changing there is a possibility that the CSS genereated in the `styled-component` is not supported. You will be notified of this and what field is in the wrong via the React Native red screen of death :). 
 
-#### Pitfalls you may hit
-When you execute after changing
+Typically, you can remove the CSS as it sometimes is extraneos. However, if you need it, then you must figure out how to do this within the React Native CSS options. See documentation for that.
+
+##### Things are not showing up...???
+If things do not show up that can sometimes mean that we still have `flex-direction: row` and it should be `flex-direction: column`. React Native's flex implementation has a different default value for `flex-direction`. If you don't specify for CSS on the web...then `row` is what you get. If you don't specify in React Native, then `column` is your default.
+
+The first thing to try when things don't show up is systematically (from the inside out) removing `flex-direction: row` from the `styled-component`. If that does not work, then it is time to start commenting out sections of code to see if those other sections work...and perhaps the entire piece is not working.
+
+Really, it's down to you playing with the CSS to get thing to show up. This doesn't happen often but does when there are a lot of items on the screen.
